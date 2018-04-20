@@ -1,0 +1,17 @@
+{
+  "name": "gestalt-test-setup",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.0.0"
+  }
+}
