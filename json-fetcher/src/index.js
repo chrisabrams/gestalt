@@ -1,4 +1,4 @@
-const methodChainMixin = require('gestalt-method-chain')
+const methodChainMixin = require('../../method-chain')
 const request = require('superagent')
 
 class JSONFetcher {

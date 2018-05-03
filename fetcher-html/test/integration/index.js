@@ -11,8 +11,7 @@ describe('HTML Fetcher: Integration', function() {
     const data = await scraper
       .start()
       .getDimensions()
-      .stop()
-      .run(() => scraper.data)
+      .stop(() => scraper.data)
 
     expect(typeof data.dimensions.width == 'number').to.be.true
 
@@ -28,7 +27,6 @@ describe('HTML Fetcher: Integration', function() {
       .start()
       .toPDF(pagePath)
       .stop()
-      .run()
 
     expect(fs.existsSync(pagePath)).to.be.true
 
@@ -44,7 +42,6 @@ describe('HTML Fetcher: Integration', function() {
       .start()
       .toScreenshot(pagePath)
       .stop()
-      .run()
 
     expect(fs.existsSync(pagePath)).to.be.true
 
@@ -60,7 +57,6 @@ describe('HTML Fetcher: Integration', function() {
       .start()
       .toScreenshot(pagePath, {full: true})
       .stop()
-      .run()
 
     expect(fs.existsSync(pagePath)).to.be.true
 
@@ -74,8 +70,7 @@ describe('HTML Fetcher: Integration', function() {
     const data = await scraper
       .start()
       .getNodesContainingText('news', 'news')
-      .stop()
-      .run(() => scraper.data)
+      .stop(() => scraper.data)
 
     expect(data.evaluate.news.length > 0).to.be.true
 

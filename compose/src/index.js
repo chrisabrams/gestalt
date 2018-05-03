@@ -1,5 +1,5 @@
 const errorCodes = require('./lib/codes')
-const {Logger} = require('../../')
+const Logger = require('../../logger')
 
 class Composer {
 

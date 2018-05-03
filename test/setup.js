@@ -1,23 +1,2 @@
-const Composer = require('../compose/src')
-
-process.on('uncaughtException', function(e) {
-  //console.error(e)
-  new Composer(e, {uncaught: true})
-})
-
-process.on('unhandledRejection', function(e) {
-  //console.error(e)
-  new Composer(e, {unhandled: true})
-})
-
 const path = require('path')
-require('dotenv').config({path: path.join(__dirname, '../', '.env')})
-
-const chai  = require('chai')
-const sinon = require('sinon')
-const sinonChai = require('sinon-chai')
-
-chai.use(sinonChai)
-
-global.expect = chai.expect
-global.sinon  = sinon
+require('../test-setup')(path.join(__dirname, '../', '.env'), {react: true})

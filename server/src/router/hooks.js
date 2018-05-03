@@ -1,4 +1,4 @@
-const {logger, uuid} = require('lydeum-base')
+const uuid = require('../../../lib/uuid')
 
 const hooks = {
   services: {
@@ -33,7 +33,7 @@ function removeHook(options = {}) {
 
   }
   catch(e) {
-   logger.error('Could not remove hook', e)
+    console.error('Could not remove hook', e)
   }
 
 }
@@ -69,7 +69,7 @@ function registerHook(hook, cb) {
 
   }
   catch(e) {
-   logger.error('Could not register hook', e)
+    console.error('Could not register hook', e)
   }
 
   return _hooks

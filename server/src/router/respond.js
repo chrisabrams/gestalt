@@ -4,8 +4,6 @@ function respond(options = {}) {
 
     let response = req.response || {message: 'The request was received but nothing was returned.'}
     const status = response.status || process.env.HTTP_ERROR_CODE
-    
-    console.error('KEYS', Object.keys(response))
 
     if(response.error) {
       response = response.error

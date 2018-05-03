@@ -1,26 +1,25 @@
 const bodyParser = require('body-parser')
-const Composer = require('gestalt-compose')
+const Composer = require('../../compose')
 const express = require('express')
 const http = require('http')
-const io = require('socket.io')
-const {logger} = require('lydeum-base')
-const {registerHook} = require('./router')
+//const io = require('socket.io')
+const Logger = require('../../logger')
+const {dispatch, removeHook, registerHook, respond, Router, triggerHook} = require('./router')
 const request = require('superagent')
 
-const PORT = process.env.PORT
-const version = 0.1
+const PORT = process.env.GESTALT_SERVER_PORT
+const version = process.env.GESTALT_SERVER_VERSION || 0.1
 
 class Server {
   constructor(options = {}) {
     this.io = null
-    this.logger = options.logger || logger
-    this.peers = []
+    this.logger = new Logger()
     this.router = options.router || null
     this.routes = options.routes || []
     this.routesList = {}
-    this.version = options.version || '0.1'
+    this.version = version
 
-    this._basePath = `http://localhost:${process.env.PORT}`
+    this._basePath = `http://localhost:${PORT}`
     this._server = express()
     this._server.use(bodyParser.json())
     this._server.use(bodyParser.urlencoded({ extended: true }))
@@ -30,6 +29,11 @@ class Server {
   }
 
   generateRoutes() {
+
+    const foo = (req, res) => {res.json({pkg: req.body})}
+    const myrouter = express.Router()
+    myrouter.post('/', foo)
+    this._server.use('/foo', myrouter)
 
     for(let i = 0, l = this.routes.length; i < l; i++) {
       const {name, routes} = this.routes[i]
@@ -140,10 +144,10 @@ class Server {
   start() {
 
     this.server = http.Server(this._server)
-    this.io = io(this.server)
+    //this.io = io(this.server)
 
     this.server.listen(PORT, () => {
-      this.logger.debug(`Node listening on port ${PORT}`, {})
+      this.logger.debug(`Node listening on ${this._basePath}`, {})
     })
   }
 
@@ -151,8 +155,6 @@ class Server {
     this.server.close()
   }
 }
-
-const {dispatch, removeHook, registerHook, respond, Router, triggerHook} = require('./router')
 
 module.exports = Server
 module.exports.dispatch = dispatch

@@ -1,4 +1,4 @@
-const {methodChainMixin} = require('../../')
+const methodChainMixin = require('../../method-chain')
 const puppeteer = require('puppeteer')
 
 function matchNodes(text) {
@@ -37,7 +37,27 @@ class HTMLFetcher {
   constructor(options = {}) {
 
     this.data = {}
+    this.headless = (typeof options.headless == 'boolean') ? options.headless : true
     this.url = options.url
+
+    this._start()
+
+  }
+
+  authenticate(username, password) {
+
+    return this._addToChain(() => new Promise(async(resolve, reject) => {
+
+      try {
+        await this.page.authenticate({username, password})
+
+        resolve()
+      }
+      catch(e) {
+        reject(e)
+      }
+
+    }))
 
   }
 
@@ -115,13 +135,31 @@ class HTMLFetcher {
 
   }
 
+  _start() {
+
+    return this._addToChain(() => new Promise(async(resolve, reject) => {
+
+      try {
+
+        this.browser = await puppeteer.launch({headless: this.headless})
+        this.page = await this.browser.newPage()
+
+        resolve()
+      }
+      catch(e) {
+        reject(e)
+      }
+
+    }))
+
+  }
+
   start() {
 
     return this._addToChain(() => new Promise(async(resolve, reject) => {
 
       try {
-        this.browser = await puppeteer.launch({headless: true})
-        this.page = await this.browser.newPage()
+
         await this.page.goto(this.url)
 
         resolve()
@@ -134,7 +172,7 @@ class HTMLFetcher {
 
   }
 
-  stop() {
+  stop(cb) {
 
     return this._addToChain(() => new Promise((resolve, reject) => {
 
@@ -147,7 +185,7 @@ class HTMLFetcher {
         reject(e)
       }
 
-    }))
+    })).run(cb)
 
   }
 
@@ -174,6 +212,23 @@ class HTMLFetcher {
 
       try {
         await this.page.screenshot({path, fullPage: options.full})
+
+        resolve()
+      }
+      catch(e) {
+        reject(e)
+      }
+
+    }))
+
+  }
+
+  waitForSelector(selector) {
+
+    return this._addToChain(() => new Promise(async(resolve, reject) => {
+
+      try {
+        await this.page.waitForSelector(selector)
 
         resolve()
       }

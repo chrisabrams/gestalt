@@ -15,18 +15,22 @@ function dispatch(controller, action, options = {}) {
         status: (req.method == 'POST') ? (process.env.HTTP_CREATE_CODE || 201) : (process.env.HTTP_SUCCESS_CODE || 200)
       }
 
-      const afterHooks = hooks.services.after.get(serviceName)
+      if(typeof serviceName == 'string') {
 
-      if(afterHooks instanceof Array) {
+        const afterHooks = hooks.services.after.get(serviceName)
 
-        for(let i = 0, l = afterHooks.length; i < l; i++) {
-          const hook = afterHooks[i]
+        if(afterHooks instanceof Array) {
 
-          if(hook.actionName == actionName) {
+          for(let i = 0, l = afterHooks.length; i < l; i++) {
+            const hook = afterHooks[i]
 
-            response.pkg = await hook.operation(req, response.pkg)
+            if(hook.actionName == actionName) {
 
+              response.pkg = await hook.operation(req, response.pkg)
+
+            }
           }
+
         }
 
       }

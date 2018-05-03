@@ -1,5 +1,6 @@
 const dispatch = require('./dispatch')
 const express = require('express')
+const respond = require('./respond')
 
 class Router {
 
@@ -31,10 +32,10 @@ class Router {
 
   verb(v, options = {}, dispatchOptions = {}) {
     const {action, middleware, route, schema} = options
-
+    //const foo = (req, res) => {res.json({pkg: req.body})}
     let _middleware = []
 
-    if(schema) {
+    /*if(schema) {
 
       if(typeof schema instanceof Array) {
         _middleware = _middleware.concat(schema)
@@ -47,10 +48,10 @@ class Router {
 
     if(middleware instanceof Array) {
       _middleware = _middleware.concat(middleware)
-    }
+    }*/
 
-    _middleware.push(dispatch(this.controller, action, dispatchOptions))
-
+    _middleware.push(dispatch(this.controller, action, dispatchOptions), respond())
+    console.log('_middleware', _middleware)
     this.routes[v](route, _middleware)
   }
 
