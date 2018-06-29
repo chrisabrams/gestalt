@@ -7,37 +7,6 @@ const hooks = {
   }
 }
 
-function removeHook(options = {}) {
-
-  const {id, ids, serviceName} = options
-  const name = serviceName
-  const when = 'after'
-
-  try {
-
-    if(!hooks.services[when].get(name)) {
-      hooks.services[when].set(name, [])
-    }
-
-    const _hooks = hooks.services[when].get(name)
-
-    for(let i = 0, l = _hooks.length; i < l; i++) {
-      const hook = _hooks[i]
-
-      if(typeof id == 'string' && id == hook.id || ids instanceof Array && ids.includes(hook.id)) {
-        _hooks.splice(i, 1)
-      }
-    }
-
-    hooks.services[when].set(_hooks)
-
-  }
-  catch(e) {
-    console.error('Could not remove hook', e)
-  }
-
-}
-
 function registerHook(hook, cb) {
 
   const h = Object.assign({}, hook)
@@ -73,6 +42,37 @@ function registerHook(hook, cb) {
   }
 
   return _hooks
+
+}
+
+function removeHook(options = {}) {
+
+  const {id, ids, serviceName} = options
+  const name = serviceName
+  const when = 'after'
+
+  try {
+
+    if(!hooks.services[when].get(name)) {
+      hooks.services[when].set(name, [])
+    }
+
+    const _hooks = hooks.services[when].get(name)
+
+    for(let i = 0, l = _hooks.length; i < l; i++) {
+      const hook = _hooks[i]
+
+      if(typeof id == 'string' && id == hook.id || ids instanceof Array && ids.includes(hook.id)) {
+        _hooks.splice(i, 1)
+      }
+    }
+
+    hooks.services[when].set(_hooks)
+
+  }
+  catch(e) {
+    console.error('Could not remove hook', e)
+  }
 
 }
 

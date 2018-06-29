@@ -54,3 +54,15 @@ class EE {
 }
 
 module.exports = EE
+module.exports.compose = function compose() {
+  const ee = new EE()
+
+  return {
+    _events: {},
+    emit: ee.emit,
+    off: ee.off,
+    on: ee.on,
+    once: ee.once
+  }
+
+}

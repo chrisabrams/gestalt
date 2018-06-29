@@ -1,0 +1,14 @@
+{
+  "name": "gestalt-middleware",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp mocha"
+  },
+  "keywords": [],
+  "author": "Chris Abrams <mail@chrisabrams.com>",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
+}

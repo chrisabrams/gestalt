@@ -23,13 +23,13 @@ gulp.task('mocha', function(done) {
 
   processMocha([
     './test/setup.js',
+    './compose/test/unit/*.js'
     //'./event-emitter/test/unit/*.js',
     //'./gc-fn-worker/test/unit/*.js',
     //'./gc-pubsub/test/integration/**/*.js',
     //'./fetcher-html/test/**/index.js',
     //'./json-fetcher/test/unit/index.js',
     //'./method-chain/test/unit/*.js'
-    './react-router-middleware/test/unit/route.js'
   ])
 
 })

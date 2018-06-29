@@ -9,7 +9,9 @@ class Middleware {
     // Have all the middleware run?
     if(this.middlewareLayers.length == this.currentMiddlewareLayer) {
 
-      if(this.emit) this.emit('end', pkg)
+      if(this.emit) {
+        this.emit('end', pkg)
+      }
 
       // Reset so middleware can make another run if need be
       this.currentMiddlewareLayer = 0

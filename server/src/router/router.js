@@ -1,5 +1,6 @@
 const dispatch = require('./dispatch')
 const express = require('express')
+const parserMiddleware = require('./parser/middleware')
 const respond = require('./respond')
 
 class Router {
@@ -7,7 +8,10 @@ class Router {
   constructor(options = {}) {
     this.controller = options.controller
     this.name = options.name
-    this.routes = express.Router()
+    this.parent = options.parent
+
+    let mergeParams = (this.parent) ? true : false
+    this.routes = express.Router({mergeParams})
   }
 
   delete(options = {}, dispatchOptions = {}) {
@@ -31,9 +35,13 @@ class Router {
   }
 
   verb(v, options = {}, dispatchOptions = {}) {
-    const {action, middleware, route, schema} = options
+    const {action, middleware, parser, route, schema} = options
     //const foo = (req, res) => {res.json({pkg: req.body})}
     let _middleware = []
+
+    if(parser) {
+      _middleware.push(parserMiddleware(parser))
+    }
 
     /*if(schema) {
 
@@ -51,7 +59,7 @@ class Router {
     }*/
 
     _middleware.push(dispatch(this.controller, action, dispatchOptions), respond())
-    console.log('_middleware', _middleware)
+    //console.log('_middleware', _middleware)
     this.routes[v](route, _middleware)
   }
 

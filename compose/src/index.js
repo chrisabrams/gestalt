@@ -1,89 +1,47 @@
-const errorCodes = require('./lib/codes')
-const Logger = require('../../logger')
+const EE = require('../../event-emitter')
 
 class Composer {
 
-  constructor(data, options = {}) {
-    this._action = 'error'
-    this._data = data
-    this.logger = new Logger()
+  constructor(options = {}) {
+
+    this.logger = console
     this.options = options
-    this._output = data
-    this._stack = true
-    this._type = 'unknown'
-    this._uncaught = (typeof options.uncaught) ? options.uncaught : false
-    this._unhandled = (typeof options.unhandled) ? options.unhandled : false
+    this._output = null
+    this._process = null
+    this._types = []
 
-    this.determineType()
-    this.processType()
-    this.output()
   }
 
-  debug(m) {
-    this.logger.debug(m)
+  use(o) {
 
-    return this
-  }
+    try {
+      const ignoreKeys = ['_parseType', '_processType', '_type']
+      const keys = Object.keys(o).filter((s) => !(ignoreKeys.includes(s)))
 
-  determineType() {
-    const data = this._data
+      if(o._type) {
+        const {_parseType, _processType, _type} = o
 
-    if(typeof data == 'object') {
-
-      if(data.response) {
-        this._type = 'express'
+        this._types.push({
+          parseType: _parseType,
+          processType: _processType,
+          type: _type
+        })
       }
 
-      if(errorCodes.superagent.includes(data.code)) {
-        this._type = 'superagent'
+      for(let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i]
+
+        if(typeof o[key] == 'function') {
+          this[key] = o[key].bind(this)
+        }
+        else {
+          this[key] = o[key]
+        }
       }
 
     }
-
-  }
-
-  error(m, e = {}) {
-    this.logger.error(m, e)
-  
-    if(this._stack) {
-      console.error(e.stack)
-    }
-
-    return this
-  }
-
-  log(m) {
-    this.logger.log(m)
-
-    return this
-  }
-
-  output() {
-
-    if(this._uncaught) {
-      this.logger.debug('The following error was uncaught')
-    }
-
-    if(this._unhandled) {
-      this.logger.debug('The following error was unhandled')
-    }
-
-    this[this._action](this._type, this._output)
-
-  }
-
-  processType() {
-
-    switch(this._type) {
-
-      case 'express':
-        this._output = this._data.error
-        break
-
-      case 'superagent':
-        this._stack = false
-        break
-
+    catch(e) {
+      this.logger.error('Could not register mixin\n', e)
     }
 
   }
@@ -91,3 +49,4 @@ class Composer {
 }
 
 module.exports = Composer
+module.exports.mixins = require('./mixins')

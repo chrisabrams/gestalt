@@ -1,6 +1,6 @@
+process.env.NODE_ENV = 'test'
+
 const chai  = require('chai')
-const chaiEnzyme = require('chai-enzyme')
-const Compose = require('../compose')
 const path = require('path')
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
@@ -10,20 +10,30 @@ function setup(envPath, options = {}) {
   const onReact = options.react
 
   process.on('uncaughtException', function(e) {
-    //console.error(e)
-    //new Compose(e, {uncaught: true})
+    try {
+      const Compose = require('gestalt-compose')
+      new Compose(e, {uncaught: true})
+    }
+    catch(err) {
+      console.error(e)
+    }
   })
   
   process.on('unhandledRejection', function(e) {
-    //console.error(e)
-    new Compose(e, {unhandled: true})
+    try {
+      const Compose = require('gestalt-compose')
+      new Compose(e, {uncaught: true})
+    }
+    catch(err) {
+      console.error(e)
+    }
   })
   
   if(typeof envPath == 'string') {
     require('dotenv').config({path: envPath})
   }
 
-  if(onReact) {
+  if(typeof onReact == 'boolean' && onReact) {
 
     require('babel-core/register')
     require('raf/polyfill')
@@ -57,6 +67,7 @@ function setup(envPath, options = {}) {
     const Adapter = require('enzyme-adapter-react-16')
     Enzyme.configure({ adapter: new Adapter() })
 
+    const chaiEnzyme = require('chai-enzyme')
     chai.use(chaiEnzyme())
 
   }
@@ -70,5 +81,3 @@ function setup(envPath, options = {}) {
 }
 
 module.exports = setup
-
-process.env.NODE_ENV = 'test'

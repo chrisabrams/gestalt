@@ -1,0 +1,26 @@
+{
+  "name": "gestalt-pg",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "object-assign-deep": "^0.4.0",
+    "pg": "^7.4.3",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "dotenv": "^5.0.1",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^5.0.0",
+    "mocha": "^5.0.5",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.0.0"
+  }
+}

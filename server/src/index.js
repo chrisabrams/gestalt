@@ -7,22 +7,30 @@ const Logger = require('../../logger')
 const {dispatch, removeHook, registerHook, respond, Router, triggerHook} = require('./router')
 const request = require('superagent')
 
-const PORT = process.env.GESTALT_SERVER_PORT
+const host = process.env.GESTALT_SERVER_HOST || 'localhost'
+const protocol = process.env.GESTALT_SERVER_PROTOCOL || 'http'
+const port = process.env.GESTALT_SERVER_PORT
 const version = process.env.GESTALT_SERVER_VERSION || 0.1
 
 class Server {
   constructor(options = {}) {
     this.io = null
     this.logger = new Logger()
+    this._readyResolve = null
+    this._readyReject = null
+    this.ready = new Promise((resolve, reject) => {
+      this._readyResolve = resolve
+      this._readyReject = reject
+    })
     this.router = options.router || null
     this.routes = options.routes || []
     this.routesList = {}
     this.version = version
 
-    this._basePath = `http://localhost:${PORT}`
+    this._basePath = `${protocol}://${host}:${port}`
     this._server = express()
     this._server.use(bodyParser.json())
-    this._server.use(bodyParser.urlencoded({ extended: true }))
+    this._server.use(bodyParser.urlencoded({extended: true}))
 
     this.generateRoutes()
 
@@ -30,15 +38,20 @@ class Server {
 
   generateRoutes() {
 
-    const foo = (req, res) => {res.json({pkg: req.body})}
+    /*const foo = (req, res) => {res.json({pkg: req.body})}
     const myrouter = express.Router()
     myrouter.post('/', foo)
-    this._server.use('/foo', myrouter)
+    this._server.use('/foo', myrouter)*/
 
     for(let i = 0, l = this.routes.length; i < l; i++) {
-      const {name, routes} = this.routes[i]
+      const {name, parent, routes} = this.routes[i]
       let routesList = {}
-      const route = `/api/${this.version}/${name}`
+      let route = `/api/${this.version}/${name}`
+
+      if(parent) {
+        route = `/api/${this.version}/${parent.name}/:${parent.name}Id/${name}`
+      }
+
       console.log('route', route)
       //console.log('routes', routes)
       this._server.use(route, routes)
@@ -111,7 +124,7 @@ class Server {
             }
             catch(e) {
               new Composer(e).message(`Could  not fetch as ${verb}`)
-              console.error('HITTTTTTTTTTT')
+
               reject()
             }
       
@@ -146,7 +159,8 @@ class Server {
     this.server = http.Server(this._server)
     //this.io = io(this.server)
 
-    this.server.listen(PORT, () => {
+    this.server.listen(port, () => {
+      this._readyResolve(true)
       this.logger.debug(`Node listening on ${this._basePath}`, {})
     })
   }
