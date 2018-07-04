@@ -215,11 +215,11 @@ class Query {
     return new Promise(async (resolve, reject) => {
 
       try {
-        console.error('this._query', this._query)
+        //console.error('this._query', this._query)
         const result = await pool.query(this._query, this._values)
         //const res = result
         const res = (options.returnChanges) ? result.rows[0] : result
-        console.log('run', res)
+        //console.log('run', res)
         resolve(res)
       }
       catch(e) {

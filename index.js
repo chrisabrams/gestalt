@@ -8,7 +8,7 @@ module.exports = {
   methodChainMixin: require('./method-chain'),
   Middleware: require('./middleware'),
   mixin: require('./mixin'),
-  PG: require('./pg'),
+  PG: require('./pg.js'),
   PubSub: require('./gc-pubsub'),
   Router: require('./server/src/router'),
   Server: require('./server/src/index'),

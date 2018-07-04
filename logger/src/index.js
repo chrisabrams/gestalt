@@ -4,9 +4,9 @@ const logger = winston.createLogger({
   level: (process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'silly',
   transports: [
     new winston.transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
       )    
     })
   ]

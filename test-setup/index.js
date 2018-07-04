@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test'
-
 const chai  = require('chai')
 const path = require('path')
 const sinon = require('sinon')
@@ -7,25 +5,29 @@ const sinonChai = require('sinon-chai')
 
 function setup(envPath, options = {}) {
 
+  //process.env.NODE_ENV = 'test'
+
   const onReact = options.react
 
   process.on('uncaughtException', function(e) {
+    console.error(e)
     try {
-      const Compose = require('gestalt-compose')
-      new Compose(e, {uncaught: true})
+      //const Compose = require('gestalt-compose')
+      //new Compose(e, {uncaught: true})
     }
     catch(err) {
-      console.error(e)
+      //console.error(e)
     }
   })
   
   process.on('unhandledRejection', function(e) {
+    console.error(e)
     try {
-      const Compose = require('gestalt-compose')
-      new Compose(e, {uncaught: true})
+      //const Compose = require('gestalt-compose')
+      //new Compose(e, {uncaught: true})
     }
     catch(err) {
-      console.error(e)
+      //console.error(e)
     }
   })
   
@@ -33,6 +35,9 @@ function setup(envPath, options = {}) {
     require('dotenv').config({path: envPath})
   }
 
+  /*
+  Enables Node.js, Mocha, expect.js, and Enzyme to test React headless.
+  */
   if(typeof onReact == 'boolean' && onReact) {
 
     require('babel-core/register')
@@ -73,6 +78,9 @@ function setup(envPath, options = {}) {
   }
 
   chai.use(sinonChai)
+  chai.use(require('chai-uuid'))
+
+  chai.config.includeStack = true
   
   global.expect = chai.expect
   global.sinon  = sinon

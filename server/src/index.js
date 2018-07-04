@@ -44,6 +44,7 @@ class Server {
     this._server.use('/foo', myrouter)*/
 
     for(let i = 0, l = this.routes.length; i < l; i++) {
+
       const {name, parent, routes} = this.routes[i]
       let routesList = {}
       let route = `/api/${this.version}/${name}`
@@ -52,7 +53,7 @@ class Server {
         route = `/api/${this.version}/${parent.name}/:${parent.name}Id/${name}`
       }
 
-      console.log('route', route)
+      //console.log('route', route)
       //console.log('routes', routes)
       this._server.use(route, routes)
       //console.log('this._server', this._server)
@@ -72,7 +73,7 @@ class Server {
 
       this.routesList[name] = routesList
     }
-    console.log('routesList', this.routesList)
+    //console.log('routesList', this.routesList)
 
   }
 
@@ -123,7 +124,9 @@ class Server {
               resolve(result.body)
             }
             catch(e) {
-              new Composer(e).message(`Could  not fetch as ${verb}`)
+              //new Composer(e).message(`Could  not fetch as ${verb}`)
+              console.error(`Could  not fetch as ${verb}`)
+              console.error(e)
 
               reject()
             }
@@ -163,6 +166,17 @@ class Server {
       this._readyResolve(true)
       this.logger.debug(`Node listening on ${this._basePath}`, {})
     })
+
+    // Helpful when terminal process is killed quickly
+    process.on('SIGTERM', () => {
+      try {
+        this.server.close()
+      }
+      catch(e) {
+
+      }
+    })
+
   }
 
   stop() {
