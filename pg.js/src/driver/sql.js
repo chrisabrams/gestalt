@@ -5,7 +5,7 @@ function intersect(a, b) {
   return Object.assign(...a.map((v, i) => b.includes(v) && {[i]: v}))
 }
 
-const {castType, customTypes} = require('./types')
+const {castType} = require('./types')
 
 class SQL {
 
@@ -15,22 +15,8 @@ class SQL {
     this.types = this.options.types || {}
     this.values = options.values || []
 
-    //this.setCustomTypes()
-
     return this.run()
   }
-
-  /*setCustomTypes() {
-
-    for(let i = 0, l = this.customTypes.length; i < l; i++) {
-      const {name, fn} = this.customTypes[i]
-
-      if(typeof name == 'string' && typeof fn == 'function') {
-        customTypes.set(name, {fn})
-      }
-    }
-
-  }*/
 
   run() {
     const returnRaw = (typeof this.options.returnRaw == 'boolean') ? this.options.returnRaw : false
@@ -40,7 +26,8 @@ class SQL {
 
       try {
 
-        const result = await pool.query(this.query, this.values)
+        const values = this.values
+        const result = await pool.query(this.query, values)
         let res = result
 
         if(!returnRaw) {

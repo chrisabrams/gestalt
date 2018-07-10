@@ -8,8 +8,8 @@ const {dispatch, removeHook, registerHook, respond, Router, triggerHook} = requi
 const request = require('superagent')
 
 const host = process.env.GESTALT_SERVER_HOST || 'localhost'
+const port = process.env.GESTALT_SERVER_PORT || 3000
 const protocol = process.env.GESTALT_SERVER_PROTOCOL || 'http'
-const port = process.env.GESTALT_SERVER_PORT
 const version = process.env.GESTALT_SERVER_VERSION || 0.1
 
 class Server {
@@ -77,17 +77,17 @@ class Server {
 
   }
 
-  get(uri) {
+  /*get(uri) {
     return this.requestUri('get', uri)
-  }
+  }*/
 
   hook(options = {}, cb) {
     return registerHook(options, cb)
   }
 
-  post(uri) {
+  /*post(uri) {
     return this.requestUri('post', uri)
-  }
+  }*/
 
   registerPeer(host) {
     if(!this.peers.contains(host)) {
@@ -181,6 +181,18 @@ class Server {
 
   stop() {
     this.server.close()
+  }
+
+  get() {
+    return this._server.get.apply(this._server, arguments)
+  }
+
+  set() {
+    return this._server.set.apply(this._server, arguments)
+  }
+
+  use() {
+    return this._server.use.apply(this._server, arguments)
   }
 }
 

@@ -218,7 +218,7 @@ class Query {
         //console.error('this._query', this._query)
         const result = await pool.query(this._query, this._values)
         //const res = result
-        const res = (options.returnChanges) ? result.rows[0] : result
+        const res = (options.returnChanges) ? result.rows : result
         //console.log('run', res)
         resolve(res)
       }
